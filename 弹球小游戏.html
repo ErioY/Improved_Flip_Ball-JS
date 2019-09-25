@@ -1,0 +1,345 @@
+<!--
+ * @Autor: ErioY
+ * @Date: 2019-09-22 11:10:30
+ * @Email: 1973545559@qq.com
+ * @Github: https://github.com/ErioY
+ * @LastEditors: ErioY
+ * @LastEditTime: 2019-09-25 21:37:35
+ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>弹球小游戏</title>
+    <style>
+    .parent {
+        width: 780px;
+        height: 1000px;
+        margin: 0 auto;
+    }
+    #ball {
+        width: 50px;
+        height: 50px;
+        background: -webkit-repeating-radial-gradient(#03a9f4 40%,#f71ab95e 60%);
+        border-radius: 50%;
+        position: absolute;
+        left: 150px;
+        top: 130px;
+    }
+    #ban {
+        width: 150px;
+        height: 20px;
+        background-color: black;
+        position: fixed;
+        left: 150px;
+        bottom: 40px;
+    }
+    ul {
+        width: 765px;
+        height: 108px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        position: relative;
+    }
+    ul>li {
+        width: 50px;
+        height: 20px;
+        background: green;
+        margin: 1px;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    #score {
+        width: 100px;
+        height: 40px;
+        position: absolute;
+        top: 50px;
+        right: 10px;
+        border: 1px rgb(0,0,0) solid;
+        font-size: 18px;
+        line-height: 40px;
+    }
+    .btn {
+        width: 100px;
+        position: absolute;
+        top: 70px;
+        left: 20px;
+    }
+    .btn>button {
+        width: 100px;
+        height: 30px;
+        margin-bottom: 5px;
+        border: 1px #000 solid;
+        background: none;
+        text-align: center;
+        line-height: 30px;
+        outline: none;
+        cursor: pointer;
+    }
+    .btn>button:hover {
+        background: #000;
+        color: #fff;
+    }
+    /* 遮罩 */
+    .zhebu {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: rgba(0,0,0,0.4);
+        display: none;
+    }
+    .zhebu .zz {
+        width: 250px;
+        height: 400px;
+        background: rgb(76, 17, 185);
+        margin: 50px auto;
+        font-size: 45px;
+        color: #fff;
+        font-family: Georgia;
+        text-align: center;
+        line-height: 200px;
+        position: relative;
+    }
+    .zhebu .zz>p {
+        font-size: 30px;
+        line-height: 0px;
+    }
+    </style>
+</head>
+<body>
+    <div class="btn">
+        <button onclick = "start()">开始</button>
+        <br />
+        <button>暂停</button>
+        <br />
+        <button onclick = "stop()">结束</button>
+    </div>
+    <div class="parent">
+        <ul class="nav clearfix" id="first">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+        </ul>
+        <div id="ball"></div>
+        <div id="ban"></div>
+    </div>
+    <div id="score">得分：<span>0</span></div>
+    <div class="zhebu">
+        <div class="zz">游戏结束!
+            <p>最终得分：</p>
+        </div>
+    </div>
+    <script>
+    var aBtn = document.querySelectorAll("button");
+    var oDiv = document.querySelector(".parent");
+    var zhebu = document.querySelector(".zhebu");
+    var oP = zhebu.querySelector("p");
+    var oUl = document.querySelector("ul");
+    var aLi = oUl.querySelectorAll("li");
+    var oScore = document.querySelector("#score");
+    var score = oScore.querySelector("span");
+    var oBall = document.querySelector("#ball");
+    var oBan = document.querySelector("#ban");
+    oBall.t = oBall.l = oBall.r = oBall.b = true;
+    var sX = 0;
+    var sY = 0;
+    var timer = null;
+    for (var i = 0; i < aLi.length; i++) {
+        var r = Math.random()*255;
+        var g = Math.random()*255;
+        var b = Math.random()*255;
+        oDiv.style.border = "1px rgb(" + r + "," + g + "," + b + ") solid";
+        aLi[i].style.background = "rgb(" + r + "," + g + "," + b + ")";
+        // 给小球定位
+        aLi[i].style.left = i % 15 * 52 + "px";
+        // 规定有15列小球
+        aLi[i].style.top = parseInt(i / 15) * 22 + "px";
+    }
+
+    // 鼠标移动时木板跟着动
+    document.onmousemove = function () {
+        // 设置木板随鼠标移动时鼠标始终是木板中心点
+        var newL = event.clientX - oBan.offsetWidth/2;
+        // 控制木板的水平极端位置
+        newL = Math.max(oUl.offsetLeft,newL);
+        newL = Math.min(newL,oUl.offsetLeft + 16 + oUl.offsetWidth - oBan.offsetWidth);
+        oBan.style.left = newL + "px";
+    }
+
+    // 鼠标单击“开始”按钮时开始游戏
+    function start() {
+        sY = 8;
+        // 设置小球的水平速度为随机数 6-10
+        sX = Math.random()*(10 - 6) + 6;
+        timer = setInterval(function () {
+            // 给小球水平和垂直方向赋值
+            var newL = oBall.offsetLeft + sX;
+            var newT = oBall.offsetTop + sY;
+            // 方块存在时
+            if (newT <= oUl.offsetTop + oUl.offsetHeight) {
+                var flag = false;
+                for (var i = 0; i < aLi.length; i++) {
+                    // 检测小球和小方块的碰撞（左、右、下）
+                    if ((oBall.offsetLeft + oBall.offsetWidth - 120  >= aLi[i].offsetLeft  && oBall.offsetLeft - 120 <= aLi[i].offsetLeft+aLi[i].offsetWidth && oBall.offsetTop <= aLi[i].offsetTop + aLi[i].offsetHeight * 2) 
+                    || ((pointY - 120 >= aLi[i].offsetTop && pointY - 120 <= aLi[i].offsetTop + aLi[i].offsetHeight) && (oBall.offsetLeft + oBall.offsetWidth - 120 == aLi[i].offsetLeft || oBall.offsetLeft == aLi[i].offsetLeft + aLi[i].offsetWidth))) {
+                        // 删除对应的li元素
+                        oUl.removeChild(aLi[i]);
+                        // 成绩累加
+                        score.innerHTML++;
+                        flag = true;
+                        break;
+                    }
+                }
+                // 方块存在时，小球碰撞到方块后反弹
+                if(flag) {
+                    newT = oUl.offsetTop + oUl.offsetHeight +1;
+                     sY = -sY;
+                } 
+            }
+            // 方块不存在时，小球碰到页面顶部后反弹
+            if (newT <= 0) {
+                newT = 0;
+                sY = -sY;
+            }
+            if(newL <= oUl.offsetLeft){
+                newL = oUl.offsetLeft;
+                sX = -sX;
+            }
+            if(newL >= oUl.offsetLeft + oUl.offsetWidth - oBall.offsetWidth){
+                newL = oUl.offsetLeft + oUl.offsetWidth - oBall.offsetWidth;
+                sX = -sX;
+            }
+            // 掉到页面底部时游戏结束
+            if(newT >= document.documentElement.clientHeight-oBall.offsetHeight){
+                stop();
+            }
+            // 小球的中心点的水平和垂直位置
+            var pointX = newL + oBall.offsetWidth/2;
+            var pointY = newT + oBall.offsetHeight/2;
+            // 判断小球是否在木板左边
+            oBall.l = pointX<oBan.offsetLeft ? true : false;
+            // 判断小球
+            oBall.r = pointX>oBan.offsetLeft+oBan.offsetWidth ? true : false;
+            oBall.t = pointY<oBan.offsetTop ? true : false;
+            oBall.b = pointY>oBan.offsetTop+oBan.offsetHeight ? true : false;
+            if(newL+oBall.offsetWidth<oBan.offsetLeft||newL>oBan.offsetLeft+oBan.offsetWidth||newT+oBall.offsetHeight<oBan.offsetTop||newT>oBan.offsetTop+oBan.offsetHeight){
+                oBall.bOn = true;
+            }else{
+                if(oBall.l&&!oBall.t){
+                    newL = oBan.offsetLeft - oBall.offsetWidth;
+                    sX = -sX;
+                }
+                if(oBall.r&&!oBall.t){
+                    newL = oBan.offsetLeft + oBan.offsetWidth;
+                    sX = -sX;
+                }
+                if(oBall.t){
+                    newT = oBan.offsetTop - oBall.offsetHeight;
+                    sX += Math.random()*12-6;
+                    sY = -sY;
+                }
+            }
+            oBall.style.left = newL + "px";
+            oBall.style.top = newT + "px";
+        },50)
+    }
+
+    // 单击 “暂停” 取消定时器
+    aBtn[1].onclick = function () {
+        clearInterval(timer);
+        aBtn[1].classList.toggle("change");
+        if (aBtn[1].classList.contains("change")) {
+            aBtn[1].innerHTML = "继续";
+        } else {
+            aBtn[1].innerHTML = "暂停";
+            start();
+        }
+    } 
+
+    // 单击 “停止” 以及小球掉到底部时
+    function stop() {
+        clearInterval(timer);
+        zhebu.style.display = "block";
+        oP.innerHTML += score.innerHTML;
+    }
+    </script>
+</body>
+</html>
